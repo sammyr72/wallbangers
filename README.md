@@ -46,10 +46,39 @@ git add -A && git commit -m "Update site" && git push
 
 Pages redeploys on push, usually within a minute.
 
+## The pachinko balls
+
+Blue racquetballs fall down the whole page and bounce off the real content
+boxes. It's a single fixed canvas (`#pachinko`) painted over the sections but
+under the nav, and it never takes pointer events.
+
+Balls live in **document coordinates**, so peg rectangles are scroll-invariant
+and only get re-measured on resize/reflow, and balls stay anchored to the page
+as you scroll either direction. Anything more than ~700px outside the viewport
+is destroyed and respawns at the top.
+
+Knobs, all near the top of the pachinko block in `app.js`:
+
+| What | Where | Notes |
+|---|---|---|
+| Density | `ceiling = … W * H / 5200` | Lower divisor = more balls. At 1440×900 that's **249 live, ~158 on screen** (balls span a band about 2× the viewport, so roughly 60% are visible). |
+| Ball size | `R_MIN` / `R_MAX` | 4.5–8.5 px radius. |
+| Bounciness | `RESTITUTION` | 0.62 — racquetballs are lively. |
+| What they hit | `PEG_SEL` | Only elements with a visible edge. **Never add a full-bleed selector** (`.courtline`, `.marquee`, `.foot`): something spanning the full width dams the balls, piles them up and starves the rest of the page. |
+
+Measured cost is ~0.5 ms/frame at 1000 balls, so JS is nowhere near the limit —
+legibility is. A runtime governor watches real frame times and walks the count
+up or down, so weak machines stay smooth; it ignores the first 90 frames and
+any delta over 60 ms so load jank and GC pauses don't ratchet it down.
+
+`prefers-reduced-motion` disables the whole thing.
+
 ## Notes
 
 - Fonts come from Google Fonts (Anton / Barlow / Barlow Condensed). Everything
   else is local, so the site works offline apart from the typefaces.
+- The hero racket is inline SVG — a racquetball teardrop head (wide shoulders,
+  pointed throat, short handle), not a tennis oval. It lives in `index.html`.
 - The trailer only loads the YouTube iframe when someone clicks the poster, so
   the page costs nothing until then. Video ID lives in `data-video` on
   `#trailerBox` in `index.html`.

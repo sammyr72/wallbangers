@@ -27,6 +27,11 @@
 </head>
 <body>
 
+<!-- Racquetballs falling down the whole page, bouncing off the content.
+     Sits above the sections (they have opaque backgrounds) but below the
+     nav and the lightbox, and never takes pointer events. -->
+<canvas class="pachinko" id="pachinko" aria-hidden="true"></canvas>
+
 <!-- ─────────────────────────── NAV ─────────────────────────── -->
 <header class="nav" id="nav">
   <a class="nav__brand" href="#top">
@@ -49,8 +54,48 @@
 
 <!-- ─────────────────────────── HERO ─────────────────────────── -->
 <section class="hero">
-  <img class="hero__shot" src="shots/hero-court.jpg" alt="" aria-hidden="true" width="1920" height="1080">
-  <canvas class="hero__canvas" id="rally" aria-hidden="true"></canvas>
+  <!-- Racquetball racket: teardrop head, short handle. Not a tennis racket. -->
+  <div class="hero__racket" aria-hidden="true">
+    <svg viewBox="0 0 460 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="rkFrame" x1="70" y1="40" x2="400" y2="600" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#9fe0ff"/>
+          <stop offset=".36" stop-color="#4aa6ec"/>
+          <stop offset=".7" stop-color="#1f65a6"/>
+          <stop offset="1" stop-color="#123f6c"/>
+        </linearGradient>
+        <linearGradient id="rkGrip" x1="205" y1="450" x2="262" y2="600" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#22384f"/>
+          <stop offset="1" stop-color="#0d1a29"/>
+        </linearGradient>
+        <!-- string bed sits inside the head opening -->
+        <clipPath id="rkBed">
+          <path d="M230 392C165 368 103 320 76 246 50 176 78 100 148 68 192 48 268 48 312 68 382 100 410 176 384 246 357 320 295 368 230 392Z"/>
+        </clipPath>
+      </defs>
+
+      <g clip-path="url(#rkBed)" stroke="#cfe4f7" stroke-width="2.2" opacity=".26">
+        <path d="M40 92H420M40 132H420M40 172H420M40 212H420M40 252H420M40 292H420M40 332H420M40 372H420"/>
+        <path d="M110 30V410M150 30V410M190 30V410M230 30V410M270 30V410M310 30V410M350 30V410"/>
+      </g>
+
+      <!-- throat struts down to the handle -->
+      <path d="M196 386C196 414 200 432 206 452M264 386C264 414 260 432 254 452"
+            stroke="url(#rkFrame)" stroke-width="16" stroke-linecap="round"/>
+
+      <!-- teardrop head: wide shoulders, pointed throat -->
+      <path d="M230 400C162 375 98 325 70 248 42 174 72 94 145 60 191 38 269 38 315 60 388 94 418 174 390 248 362 325 298 375 230 400Z"
+            stroke="url(#rkFrame)" stroke-width="18" stroke-linejoin="round"/>
+
+      <rect x="203" y="446" width="54" height="150" rx="16"
+            fill="url(#rkGrip)" stroke="url(#rkFrame)" stroke-width="6"/>
+      <g stroke="#4aa6ec" stroke-width="2.4" opacity=".45">
+        <path d="M205 470L255 460M205 494L255 484M205 518L255 508M205 542L255 532M205 566L255 556"/>
+      </g>
+      <path d="M230 596c24 9 40 20 36 35" stroke="#4aa6ec" stroke-width="5"
+            stroke-linecap="round" opacity=".55"/>
+    </svg>
+  </div>
   <div class="hero__veil" aria-hidden="true"></div>
 
   <div class="hero__inner">

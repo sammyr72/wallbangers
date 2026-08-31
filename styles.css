@@ -139,17 +139,35 @@ a{ color:inherit; text-decoration:none; }
   padding:8.5rem 0 5rem;
   isolation:isolate; overflow:hidden;
 }
-.hero__shot{
-  position:absolute; inset:0; z-index:-3;
-  width:100%; height:100%; object-fit:cover;
-  opacity:.62;
+/* the racket stands in for the old court photo */
+.hero__racket{
+  position:absolute; z-index:-2; pointer-events:none;
+  right:clamp(-3rem,3vw,5rem); top:50%;
+  width:clamp(230px,30vw,430px);
+  translate:0 -50%; rotate:-15deg;
+  opacity:.44;
+  filter:drop-shadow(0 26px 60px rgba(0,0,0,.75));
+  animation:racketDrift 14s ease-in-out infinite alternate;
 }
-.hero__canvas{ position:absolute; inset:0; z-index:-2; width:100%; height:100%; }
+.hero__racket svg{ width:100%; height:auto; }
+@keyframes racketDrift{ to{ rotate:-11deg; translate:0 calc(-50% - 16px); } }
+@media (max-width:900px){ .hero__racket{ opacity:.26; right:-16%; } }
+
 .hero__veil{
   position:absolute; inset:0; z-index:-1; pointer-events:none;
   background:
-    radial-gradient(78% 62% at 50% 42%, transparent 12%, rgba(8,10,15,.62) 62%, var(--bg) 100%),
-    linear-gradient(180deg, rgba(8,10,15,.86) 0%, transparent 26%, transparent 58%, var(--bg) 100%);
+    radial-gradient(70% 58% at 26% 46%, rgba(87,200,255,.07), transparent 62%),
+    radial-gradient(80% 64% at 50% 42%, transparent 22%, rgba(8,10,15,.5) 68%, var(--bg) 100%),
+    linear-gradient(180deg, rgba(8,10,15,.7) 0%, transparent 30%, transparent 62%, var(--bg) 100%);
+}
+
+/* ═══════════ PACHINKO CANVAS ═══════════
+   Fixed to the viewport, spans the page, painted over the sections
+   (which are opaque) but under the nav (100) and the lightbox (200). */
+.pachinko{
+  position:fixed; inset:0; z-index:90;
+  width:100%; height:100%;
+  pointer-events:none;
 }
 .hero__inner{ position:relative; width:100%; max-width:var(--maxw); margin-inline:auto; padding-inline:var(--pad); }
 
