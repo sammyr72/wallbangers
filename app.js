@@ -42,6 +42,38 @@
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
+  /* ═══════════ mobile menu ═══════════ */
+  var navToggle = document.getElementById('navToggle');
+  /* find the bar from the button, not by id: privacy.html has a .nav that is
+     permanently stuck and carries no #nav id */
+  var navBar = navToggle && navToggle.closest ? navToggle.closest('.nav') : null;
+  if (navBar && navToggle) {
+    var closeNav = function () {
+      navBar.classList.remove('is-open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    navToggle.addEventListener('click', function () {
+      var open = navBar.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    /* close once a section is picked, and on Escape */
+    Array.prototype.forEach.call(document.querySelectorAll('#navLinks a'), function (a) {
+      a.addEventListener('click', closeNav);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && navBar.classList.contains('is-open')) {
+        closeNav();
+        navToggle.focus();
+      }
+    });
+    /* resizing back to desktop must not leave the panel latched open */
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 960) closeNav();
+    });
+  }
+
   /* ═══════════ reveal on scroll ═══════════
      Anything in the hero is above the fold by definition and must never
      wait on a scroll event to become visible — on a short viewport (or
@@ -100,6 +132,7 @@
     var CULL = 700;           /* px outside the viewport before a ball dies */
     var ROW = 260;            /* peg bucket height */
 
+    var rScale = 1;           /* balls shrink on small screens */
     var SPAWN_MS = 1000;      /* one ball a second */
     var HARD_CAP = 60;        /* safety net only; the rate keeps it far below */
     var nextSpawn = 0;
@@ -128,6 +161,8 @@
       cv.width = Math.round(W * dpr);
       cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      /* a 9px ball reads much bigger on a 390px screen than a 1440px one */
+      rScale = W < 620 ? 0.72 : 1;
     }
 
     /* ── peg rectangles, in document space ──
@@ -182,7 +217,7 @@
         x: px, y: py,
         vx: (tx - px) / t,
         vy: (ty - py) / t - 0.5 * GRAVITY * t,
-        r: R_MIN + Math.random() * (R_MAX - R_MIN),
+        r: (R_MIN + Math.random() * (R_MAX - R_MIN)) * rScale,
         live: 0,      /* set once the ball is actually inside the viewport */
         slow: 0
       });

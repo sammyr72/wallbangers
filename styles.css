@@ -92,7 +92,45 @@ a{ color:inherit; text-decoration:none; }
 }
 .nav__links a:hover{ color:var(--ink); }
 .nav__links a:hover::after{ width:100%; }
-@media (max-width:960px){ .nav__links{ display:none; } }
+
+/* ── mobile menu ── */
+.nav__toggle{
+  display:none; flex:none;
+  width:44px; height:44px; padding:11px 10px;
+  margin-left:.4rem;
+  background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:8px;
+  cursor:pointer;
+}
+.nav__toggle span{
+  display:block; height:2px; border-radius:2px; background:var(--ink);
+  transition:transform .3s var(--ease), opacity .2s var(--ease);
+}
+.nav__toggle span + span{ margin-top:5px; }
+.nav.is-open .nav__toggle span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.nav.is-open .nav__toggle span:nth-child(2){ opacity:0; }
+.nav.is-open .nav__toggle span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+.nav__toggle:focus-visible{ outline:2px solid var(--plasma); outline-offset:2px; }
+
+@media (max-width:960px){
+  .nav__toggle{ display:block; }
+  .nav__links{
+    position:absolute; top:100%; left:0; right:0;
+    flex-direction:column; gap:0;
+    padding:.4rem var(--pad) 1rem;
+    background:rgba(8,10,15,.97);
+    backdrop-filter:blur(18px) saturate(160%);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    border-bottom:1px solid var(--line);
+    /* collapsed by default; the toggle opens it */
+    display:none;
+  }
+  .nav.is-open .nav__links{ display:flex; }
+  .nav__links a{
+    padding:.85rem .2rem; font-size:1.12rem;
+    border-bottom:1px solid rgba(255,255,255,.05);
+  }
+  .nav__links a::after{ display:none; }
+}
 
 /* ═══════════ BUTTONS ═══════════ */
 .btn{
@@ -620,4 +658,91 @@ a{ color:inherit; text-decoration:none; }
   *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
   .reveal{ opacity:1; transform:none; }
   html{ scroll-behavior:auto; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PHONES
+   The layout already reflows (auto-fit grids + clamp type), so this
+   is a type-and-density pass rather than a second design: pull the
+   display sizes and the wide letter-spacing down, tighten the vertical
+   rhythm so the page is not endless on a small screen, and give the
+   touch targets room.
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width:640px){
+
+  body{ font-size:1rem; line-height:1.58; }
+  .nav{ gap:.6rem; padding-inline:1rem; }
+
+  /* vertical rhythm — the desktop padding makes for a very long scroll */
+  .section{ padding:3.4rem 0; }
+  .pa{ padding:2.6rem var(--pad); }
+  .hero{ padding:6.5rem 0 3.5rem; }
+
+  /* display type */
+  .hero__title{ font-size:clamp(2.7rem,15vw,4.4rem); }
+  .hero__kicker{
+    font-size:.95rem; letter-spacing:.34em; text-indent:.34em; margin-bottom:1.2rem;
+  }
+  .hero__sub{ font-size:1.02rem; margin-bottom:1.8rem; }
+  .hero__cta{ gap:.7rem; margin-bottom:2.4rem; }
+  .hero__cta .btn{ width:100%; }
+  .big{ font-size:clamp(1.75rem,8.4vw,2.5rem); margin-bottom:1.4rem; }
+  .big--sm{ font-size:clamp(1.6rem,7vw,2.1rem); }
+  .pa__call{ font-size:clamp(1.35rem,6.6vw,2rem); }
+
+  /* wide tracking is a desktop luxury; it shreds short lines on a phone */
+  .eyebrow{ font-size:.8rem; letter-spacing:.14em; padding:.35rem .85rem; }
+  .kicker{ font-size:.85rem; letter-spacing:.18em; gap:.7rem; }
+  .kicker::before{ width:24px; height:4px; }
+  .pa__who{ font-size:.82rem; letter-spacing:.14em; }
+  /* the em-dashes orphan onto their own line at this width */
+  .pa__who::before,.pa__who::after{ margin:0 .4rem; }
+  .ladder{ font-size:.92rem; letter-spacing:.12em; padding:.9rem 1rem; gap:.4rem .8rem; }
+  .marquee__track span{ font-size:1rem; letter-spacing:.16em; }
+  .marquee__track span::before{ margin-right:1.6rem; }
+  .marquee__track{ gap:1.6rem; }
+  .beta p.beta__badge{ font-size:.92rem; letter-spacing:.16em; }
+  .foot__links a,.nav__name{ letter-spacing:.1em; }
+
+  /* comfortable touch targets */
+  .btn{ font-size:.98rem; letter-spacing:.12em; padding:.85rem 1.3rem; min-height:46px; }
+  .btn--lg{ font-size:1.05rem; padding:.95rem 1.4rem; }
+  .btn--sm{ font-size:.8rem; letter-spacing:.08em; padding:.5rem .8rem; min-height:40px; }
+
+  /* cards + grids */
+  .cell,.bot,.tier,.get{ padding:1.3rem 1.15rem; }
+  .cell h3{ font-size:1.08rem; }
+  .bot__name{ font-size:1.3rem; }
+  .tier__q{ font-size:1.22rem; }
+  .stat{ padding:.8rem .9rem; }
+  .stat dt{ font-size:.74rem; letter-spacing:.12em; }
+  .stat dd{ font-size:1.6rem; }
+  .shots{ gap:1.5rem 1rem; margin-top:2rem; }
+  .roster,.bento,.tiers,.mols{ gap:.8rem; }
+
+  /* spec rows get cramped as a single flex line */
+  .spec > div{ gap:.75rem; padding:.7rem 0; }
+  .spec dt{ font-size:.8rem; letter-spacing:.1em; flex:0 0 auto; }
+  .spec dd{ font-size:.92rem; }
+
+  /* loop steps */
+  .loop__step{ padding:1.5rem 0; }
+  .loop__num{ font-size:2rem; }
+  .loop__step h3{ font-size:1.2rem; }
+
+  /* keep the racket clear of the hero copy */
+  .hero__racket{ width:min(64vw,300px); right:-18%; top:38%; opacity:.2; }
+
+  .kev{ gap:1.6rem; margin-top:1.4rem; }
+  .foot{ padding:1.8rem 0; }
+  .foot__inner{ gap:.8rem; }
+}
+
+/* very small phones */
+@media (max-width:380px){
+  .hero__title{ font-size:2.45rem; }
+  .hero__kicker{ font-size:.85rem; letter-spacing:.26em; text-indent:.26em; }
+  .big{ font-size:1.62rem; }
+  .nav__name{ font-size:.9rem; }
+  .btn--sm{ font-size:.72rem; padding:.45rem .6rem; }
 }
