@@ -48,30 +48,38 @@ Pages redeploys on push, usually within a minute.
 
 ## The pachinko balls
 
-Blue racquetballs fall down the whole page and bounce off the real content
-boxes. It's a single fixed canvas (`#pachinko`) painted over the sections but
-under the nav, and it never takes pointer events.
+One blue racquetball is served in every second from a random angle just off
+the edge of the viewport, arcing up toward the top third of whatever is on
+screen, then falling back through the content boxes and bouncing off them like
+pachinko pegs. It's a single fixed canvas (`#pachinko`) painted over the
+sections but under the nav, and it never takes pointer events.
+
+The launch is a real ballistic solve, not a fixed impulse: given the spawn
+point, a target and a flight time, the velocity that connects them falls out of
+the projectile equations. That's what makes a ball spawned low on the screen
+leave faster — it has further to climb in the same time — with no special
+casing. Measured: bottom-edge spawns leave at ~16.9 px/frame vs ~15.8 for
+side spawns, and shots land within ~43px of their target.
 
 Balls live in **document coordinates**, so peg rectangles are scroll-invariant
 and only get re-measured on resize/reflow, and balls stay anchored to the page
-as you scroll either direction. Anything more than ~700px outside the viewport
-is destroyed and respawns at the top.
+as you scroll either direction. Anything far enough outside the viewport is
+destroyed.
 
-Knobs, all near the top of the pachinko block in `app.js`:
+Knobs, all at the top of the pachinko block in `app.js`:
 
 | What | Where | Notes |
 |---|---|---|
-| Density | `ceiling = … W * H / 5200` | Lower divisor = more balls. At 1440×900 that's **249 live, ~158 on screen** (balls span a band about 2× the viewport, so roughly 60% are visible). |
-| Ball size | `R_MIN` / `R_MAX` | 4.5–8.5 px radius. |
+| Rate | `SPAWN_MS` | 1000 = one ball a second. Settles at **3–5 on screen**. Halve it to roughly double the population. |
+| Arc height / speed | `GRAVITY` | 0.155. Lower = floatier and slower; the launch solve compensates automatically so shots still reach the target. |
+| Where they aim | `ty` in `launch()` | `H * (0.08 … 0.34)` — the top third of the viewport. |
+| Ball size | `R_MIN` / `R_MAX` | 6–10.5 px radius. |
 | Bounciness | `RESTITUTION` | 0.62 — racquetballs are lively. |
 | What they hit | `PEG_SEL` | Only elements with a visible edge. **Never add a full-bleed selector** (`.courtline`, `.marquee`, `.foot`): something spanning the full width dams the balls, piles them up and starves the rest of the page. |
 
-Measured cost is ~0.5 ms/frame at 1000 balls, so JS is nowhere near the limit —
-legibility is. A runtime governor watches real frame times and walks the count
-up or down, so weak machines stay smooth; it ignores the first 90 frames and
-any delta over 60 ms so load jank and GC pauses don't ratchet it down.
-
-`prefers-reduced-motion` disables the whole thing.
+At this rate the population is a handful, so there's no perf concern and no
+adaptive throttling — the sim measured ~0.5 ms/frame at 1000 balls, far more
+than this ever puts on screen. `prefers-reduced-motion` disables the whole thing.
 
 ## Notes
 

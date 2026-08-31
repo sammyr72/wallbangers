@@ -65,19 +65,25 @@
     Array.prototype.forEach.call(reveals, function (el) { io.observe(el); });
   }
 
-  /* ═══════════ pachinko: racquetballs down the page ═══════════
-     Blue racquetballs spawn above the viewport, fall under gravity and
-     bounce off the real content boxes — cards, buttons, headings, court
-     lines — like pegs in a pachinko machine.
+  /* ═══════════ pachinko: racquetballs served up the page ═══════════
+     One blue racquetball is launched every second from a random angle just
+     off the edge of the viewport, arcing up toward the top third of whatever
+     is currently on screen, then falling back through the content boxes and
+     bouncing off them like pachinko pegs.
 
-     Balls live in DOCUMENT coordinates, not viewport ones. That means the
-     peg rectangles are scroll-invariant (measured once per layout instead
-     of every frame), balls stay put on the page as you scroll either way,
-     and culling is simply "too far outside the visible band".
+     The launch is a real ballistic solve rather than a fixed impulse: given a
+     spawn point, a target and the flight time, the velocity that connects
+     them falls out of the projectile equations. That is what makes a ball
+     spawned low on the screen leave faster — it has further to climb in the
+     same time — with no special-casing.
 
-     Ball count is adaptive: it starts at a fraction of the ceiling and the
-     governor walks it up or down against real frame times, so a fast
-     desktop fills the page and a weak machine stays smooth. */
+     Balls live in DOCUMENT coordinates, not viewport ones. That means the peg
+     rectangles are scroll-invariant (measured on layout instead of every
+     frame), balls stay put on the page as you scroll either way, and culling
+     is simply "too far outside the visible band".
+
+     There is no adaptive count here: at one ball a second the population
+     settles at a handful, which is nowhere near a performance concern. */
   var cv = document.getElementById('pachinko');
   if (cv && !reduced) {
     var ctx = cv.getContext('2d');
@@ -85,16 +91,18 @@
     var balls = [], pegs = [], rows = Object.create(null);
     var raf = null, running = false, stamp = 0;
 
-    var GRAVITY = 0.26;
+    var GRAVITY = 0.155;      /* gentle — these are lobbed, not dropped */
     var RESTITUTION = 0.62;   /* racquetballs are lively */
     var WALL_BOUNCE = 0.5;
-    var AIR = 0.9975;
-    var MAX_VY = 14;
-    var R_MIN = 4.5, R_MAX = 8.5;
+    var AIR = 0.998;
+    var MAX_VY = 11;
+    var R_MIN = 6, R_MAX = 10.5;
     var CULL = 700;           /* px outside the viewport before a ball dies */
     var ROW = 260;            /* peg bucket height */
 
-    var ceiling = 0, cap = 0, MIN_CAP = 24;
+    var SPAWN_MS = 1000;      /* one ball a second */
+    var HARD_CAP = 60;        /* safety net only; the rate keeps it far below */
+    var nextSpawn = 0;
 
     /* ── the ball, drawn once and blitted ── */
     var SPR = 48, sprite = (function () {
@@ -120,21 +128,12 @@
       cv.width = Math.round(W * dpr);
       cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      /* Benchmarked: the sim + blit costs ~0.5ms/frame at 1000 balls, so JS is
-         nowhere near the limit — legibility is. Balls live across a band about
-         2x the viewport (spawn point down to cull line), so roughly half of
-         this count is on screen at any moment. Lower the divisor for a denser
-         page, raise it for a calmer one; the governor below still trims on
-         devices that cannot keep up. */
-      ceiling = Math.max(50, Math.min(420, Math.round(W * H / 5200)));
-      cap = Math.min(cap || Math.round(ceiling * 0.5), ceiling);
     }
 
-    /* ── peg rectangles, in document space ── */
-    /* Pegs are elements with a VISIBLE edge, and never full-bleed ones:
+    /* ── peg rectangles, in document space ──
+       Pegs are elements with a VISIBLE edge, and never full-bleed ones:
        anything spanning the whole width (.courtline, .marquee, .foot) would
-       dam the balls, pile them up and starve the rest of the page. Everything
-       here leaves gutters or gaps for balls to fall through. */
+       dam the balls, pile them up and starve the rest of the page. */
     var PEG_SEL = '.eyebrow, .stat, .btn, .cell, .bot, .tier, .shot__btn,' +
                   '.trailer, .get, .ladder, .spec > div, .kev img,' +
                   '.beta__badge, .hero__racket, .lb__card';
@@ -155,16 +154,39 @@
       }
     }
 
-    function spawn() {
+    /* Serve one ball in from off-screen, aimed at the top third of the
+       viewport. Flight time is fixed per shot, so the further the ball has to
+       climb the harder it leaves — a low spawn is automatically a fast one. */
+    function launch() {
       var sy = window.scrollY || window.pageYOffset || 0;
+      var pad = 40;
+      var px, py, side = Math.random();
+
+      if (side < 0.5) {                       /* up from below */
+        px = W * (0.08 + Math.random() * 0.84);
+        py = sy + H + pad;
+      } else if (side < 0.75) {                /* in from the left */
+        px = -pad;
+        py = sy + H * (0.45 + Math.random() * 0.6);
+      } else {                                 /* in from the right */
+        px = W + pad;
+        py = sy + H * (0.45 + Math.random() * 0.6);
+      }
+
+      /* target: roughly the top third of what is on screen right now */
+      var tx = W * (0.12 + Math.random() * 0.76);
+      var ty = sy + H * (0.08 + Math.random() * 0.26);
+
+      var t = 62 + Math.random() * 34;         /* frames in the air */
       balls.push({
-        x: Math.random() * W,
-        y: sy - 30 - Math.random() * 260,
-        vx: (Math.random() - .5) * 1.6,
-        vy: Math.random() * 1.5,
+        x: px, y: py,
+        vx: (tx - px) / t,
+        vy: (ty - py) / t - 0.5 * GRAVITY * t,
         r: R_MIN + Math.random() * (R_MAX - R_MIN),
+        live: 0,      /* set once the ball is actually inside the viewport */
         slow: 0
       });
+      if (balls.length > HARD_CAP) balls.splice(0, balls.length - HARD_CAP);
     }
 
     /* circle vs axis-aligned box, with a little sideways jitter on impact
@@ -202,38 +224,20 @@
       }
     }
 
-    /* ── adaptive count ── */
-    var times = [], last = 0, warm = 0;
-    function governor(now) {
-      if (last) {
-        var dt = now - last;
-        /* Ignore the first stretch of frames: fonts, images and first layout
-           make load jank that would otherwise ratchet the count straight down
-           before the page has settled. Also drop absurd deltas (tab switch,
-           GC pause) rather than letting one spike cut the count. */
-        if (++warm > 90 && dt < 60) {
-          times.push(dt);
-          if (times.length >= 75) {
-            var avg = 0;
-            for (var i = 0; i < times.length; i++) avg += times[i];
-            avg /= times.length;
-            times.length = 0;
-            if (avg > 19.5 && cap > MIN_CAP) cap = Math.max(MIN_CAP, cap - 14);
-            else if (avg < 13.5 && cap < ceiling) cap = Math.min(ceiling, cap + 8);
-          }
-        }
-      }
-      last = now;
-    }
-
     function frame(now) {
       var sy = window.scrollY || window.pageYOffset || 0;
       stamp++;
       ctx.clearRect(0, 0, W, H);
-      ctx.globalAlpha = .9;
+      ctx.globalAlpha = .95;
 
-      var budget = 8;                       /* ease new balls in, no bursts */
-      while (balls.length < cap && budget-- > 0) spawn();
+      if (!nextSpawn) nextSpawn = now;
+      if (now >= nextSpawn) {
+        launch();
+        nextSpawn += SPAWN_MS;
+        /* if the tab was throttled we may be many intervals behind — resync
+           instead of firing one ball per frame until we catch up */
+        if (nextSpawn < now) nextSpawn = now + SPAWN_MS;
+      }
 
       for (var i = balls.length - 1; i >= 0; i--) {
         var b = balls[i];
@@ -244,30 +248,35 @@
         b.x += b.vx;
         b.y += b.vy;
 
-        if (b.x < b.r) { b.x = b.r; b.vx = -b.vx * WALL_BOUNCE; }
-        else if (b.x > W - b.r) { b.x = W - b.r; b.vx = -b.vx * WALL_BOUNCE; }
+        /* the side walls only catch a ball once it is actually in play, so a
+           shot served in from off-screen is not bounced straight back out */
+        if (b.x > b.r && b.x < W - b.r) b.live = 1;
+        if (b.live) {
+          if (b.x < b.r) { b.x = b.r; b.vx = -b.vx * WALL_BOUNCE; }
+          else if (b.x > W - b.r) { b.x = W - b.r; b.vx = -b.vx * WALL_BOUNCE; }
+        }
 
         collide(b);
 
         /* A ball wedged on a wide box has nothing to damp it, so it would
            jitter in place forever. Recycle anything that stops making
-           progress; it respawns at the top. */
+           progress. */
         b.slow = (Math.abs(b.vy) < .4 && Math.abs(b.vx) < .4) ? b.slow + 1 : 0;
 
         /* far enough off screen, in either direction — or stalled */
-        if (b.y > sy + H + CULL || b.y < sy - CULL - 400 || b.slow > 110) {
+        if (b.y > sy + H + CULL || b.y < sy - CULL - 400 ||
+            b.x < -600 || b.x > W + 600 || b.slow > 110) {
           balls.splice(i, 1); continue;
         }
 
         var vy = b.y - sy;
-        if (vy > -30 && vy < H + 30) ctx.drawImage(sprite, b.x - b.r, vy - b.r, b.r * 2, b.r * 2);
+        if (vy > -40 && vy < H + 40) ctx.drawImage(sprite, b.x - b.r, vy - b.r, b.r * 2, b.r * 2);
       }
 
-      governor(now);
       raf = requestAnimationFrame(frame);
     }
 
-    function start() { if (!running) { running = true; last = 0; raf = requestAnimationFrame(frame); } }
+    function start() { if (!running) { running = true; nextSpawn = 0; raf = requestAnimationFrame(frame); } }
     function stop() { running = false; if (raf) cancelAnimationFrame(raf); raf = null; }
 
     resize();
