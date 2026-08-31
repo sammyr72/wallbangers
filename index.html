@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WALLBANGERS — Racquetball VR for Meta Quest</title>
+<meta name="description" content="Real racquetball on a glass-backed court. Real swings, real spin, real rebounds — and seven robots who want your lunch money. A room-scale VR game for Meta Quest 3 by Baglunch Games.">
+
+<meta property="og:title" content="WALLBANGERS — Racquetball VR">
+<meta property="og:description" content="Real swings, real spin, real rebounds. Seven robots. One bracket. Zero mercy. Room-scale VR for Meta Quest 3.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,400;0,500;0,600;1,500&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ─────────────────────────── NAV ─────────────────────────── -->
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top">
+    <img class="nav__mark" src="icon.png" alt="" width="30" height="30">
+    <span class="nav__name">Wallbangers</span>
+  </a>
+  <nav class="nav__links" aria-label="Main">
+    <a href="#game">The Sport</a>
+    <a href="#play">How it plays</a>
+    <a href="#screens">Screens</a>
+    <a href="#trailer">Trailer</a>
+    <a href="#bots">The Bots</a>
+    <a href="#specs">Specs</a>
+  </nav>
+  <a class="btn btn--primary btn--sm" data-store-link data-pending="Coming to Quest"
+     href="#" target="_blank" rel="noopener noreferrer">Get it on Quest</a>
+</header>
+
+<main id="top">
+
+<!-- ─────────────────────────── HERO ─────────────────────────── -->
+<section class="hero">
+  <img class="hero__shot" src="shots/hero-court.jpg" alt="" aria-hidden="true" width="1920" height="1080">
+  <canvas class="hero__canvas" id="rally" aria-hidden="true"></canvas>
+  <div class="hero__veil" aria-hidden="true"></div>
+
+  <div class="hero__inner">
+    <p class="eyebrow reveal">
+      <span class="dot" aria-hidden="true"></span>
+      Baglunch Games · Meta Quest 3 &amp; 3S · Room-scale VR
+    </p>
+
+    <h1 class="hero__title reveal" style="--d:.05s">Wallbangers</h1>
+    <p class="hero__kicker reveal" style="--d:.12s">Racquetball VR</p>
+
+    <p class="hero__sub reveal" style="--d:.2s">
+      A glass-backed court, a ball that behaves like a ball, and seven robots
+      who want your lunch money. Real swings, real spin, real rebounds —
+      <strong>first to 15</strong>.
+    </p>
+
+    <div class="hero__cta reveal" style="--d:.28s">
+      <a class="btn btn--primary btn--lg" data-store-link
+         data-pending="Coming to Quest" data-pending-note="Meta Horizon Store"
+         href="#" target="_blank" rel="noopener noreferrer">Get it on Quest<small>Meta Horizon Store</small></a>
+      <a class="btn btn--ghost btn--lg" href="#trailer">Watch the trailer</a>
+    </div>
+
+    <dl class="stats reveal" style="--d:.36s">
+      <div class="stat"><dt>Points to win</dt><dd>15</dd></div>
+      <div class="stat"><dt>Rival bots</dt><dd>7</dd></div>
+      <div class="stat"><dt>On Quest 3</dt><dd>90<em>Hz</em></dd></div>
+      <div class="stat"><dt>Online 1v1</dt><dd><em>Beta</em></dd></div>
+    </dl>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true"><span></span></div>
+</section>
+
+<!-- ─────────────────────────── MARQUEE ─────────────────────────── -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>Ace</span><span>Side out</span><span>Kill shot</span><span>Ceiling ball</span><span>Z-ball</span><span>Pinch</span><span>Splat</span><span>Cross-court pass</span><span>Around-the-walls</span><span>Lob</span><span>Match point</span><span>Belgium!</span>
+    <span>Ace</span><span>Side out</span><span>Kill shot</span><span>Ceiling ball</span><span>Z-ball</span><span>Pinch</span><span>Splat</span><span>Cross-court pass</span><span>Around-the-walls</span><span>Lob</span><span>Match point</span><span>Belgium!</span>
+  </div>
+</div>
+
+<!-- ─────────────────────────── PA CALL ─────────────────────────── -->
+<div class="pa">
+  <p class="pa__call">&ldquo;Let&rsquo;s play.&rdquo;</p>
+  <p class="pa__who">the announcer, thrilled as ever</p>
+</div>
+
+<hr class="courtline">
+
+<!-- ─────────────────────────── 01 · THE SPORT ─────────────────────────── -->
+<section class="section" id="game">
+  <div class="wrap">
+    <p class="kicker reveal">01 — The sport</p>
+    <h2 class="big reveal">The ball behaves<br>like a <em>ball</em>.</h2>
+    <div class="two-col">
+      <p class="lead reveal">
+        Serve from the box, keep it alive off the front wall, first to 15.
+        Kills, lobs, passes, ceiling balls, faults, side-outs, second serves —
+        the actual rules of racquetball, physically simulated rather than
+        approximated. Nothing on the court is on rails.
+      </p>
+      <p class="lead reveal">
+        You are in a real court, not a void: a full-size box with a hardwood
+        floor, red service lines, a glass back wall and a ceiling that is
+        absolutely in play. Every surface has its own weight of sound, and the
+        whole room is wrapped in the reverb a concrete box actually has.
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="courtline">
+
+<!-- ─────────────────────────── 02 · THE LOOP ─────────────────────────── -->
+<section class="section section--grad" id="play">
+  <div class="wrap">
+    <p class="kicker reveal">02 — The loop</p>
+    <h2 class="big reveal">Snap. Swing. Read.</h2>
+
+    <ol class="loop">
+      <li class="loop__step reveal">
+        <span class="loop__num">01</span>
+        <h3>Snap it to your hand</h3>
+        <p>
+          Nobody wants to chase a small blue ball around the floor in VR.
+          Reach toward it, <b>squeeze the grip</b>, and arcs of plasma leap off
+          your fingers and pull it in — held, spinning, ready. Then serve from
+          the box like the rulebook says.
+        </p>
+        <p class="loop__meta">The plasma magnet · flick to throw, the release keeps your peak speed</p>
+      </li>
+
+      <li class="loop__step reveal">
+        <span class="loop__num">02</span>
+        <h3>Swing like you mean it</h3>
+        <p>
+          Your racket is not a laser pointer. <b>Swing speed and face angle</b>
+          drive every shot — brush the ball and it takes spin, and spin makes it
+          curve. Air drag, Magnus lift and lively walls do the rest. A lazy
+          flick gets you a lazy ball, and the bot will eat it.
+        </p>
+        <p class="loop__meta">Physics-first hitting · full swing-arc sweep detection at 90 Hz</p>
+      </li>
+
+      <li class="loop__step reveal">
+        <span class="loop__num">03</span>
+        <h3>Read the rally</h3>
+        <p>
+          A corkscrew spin-trail follows the ball, and every wall, floor and
+          ceiling hit stamps a <b>glowing ripple ring</b> on the surface it hit.
+          The court tells you where the ball has been and where it is going, so
+          a full-pace rally stays readable instead of turning into a blur.
+        </p>
+        <p class="loop__meta">Ten shots in the book: kill · pinch · splat · pass · Z-ball · ceiling · lob</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<hr class="courtline">
+
+<!-- ─────────────────────────── 03 · SCREENS ─────────────────────────── -->
+<section class="section section--alt" id="screens">
+  <div class="wrap">
+    <p class="kicker reveal">03 — Captures</p>
+    <h2 class="big reveal">Straight off the headset.</h2>
+    <p class="lead lead--wide reveal">
+      No mockups, no staging — these are raw grabs from a Quest 3, menus and
+      all. Click any of them to open it full size.
+    </p>
+
+    <div class="shots">
+      <figure class="shot reveal">
+        <button class="shot__btn" type="button"
+          data-full="shots/01-title-card.jpg"
+          data-title="The court is the title screen"
+          data-cap="No menu void — the logo hangs on the front wall of the room you are about to play in."
+          aria-label="View: The court is the title screen">
+          <img src="shots/01-title-card-thumb.jpg" alt="The WALLBANGERS logo projected on the front wall of the racquetball court" width="880" height="495" loading="eager" decoding="async">
+        </button>
+        <figcaption class="shot__cap"><b>The court is the title screen</b> No menu void — the logo hangs on the front wall of the room you are about to play in.</figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <button class="shot__btn" type="button"
+          data-full="shots/02-court.jpg"
+          data-title="K.E.V.I.N. has the serve"
+          data-cap="Hover rings, glowing eyes, a racket arm — and a chest full of score pips he is about to light up."
+          aria-label="View: K.E.V.I.N. has the serve">
+          <img src="shots/02-court-thumb.jpg" alt="K.E.V.I.N. the robot opponent hovering on the court beside the player's racket and the ball" width="880" height="495" loading="eager" decoding="async">
+        </button>
+        <figcaption class="shot__cap"><b>K.E.V.I.N. has the serve</b> Hover rings, glowing eyes, a racket arm — and a chest full of score pips he is about to light up.</figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <button class="shot__btn" type="button"
+          data-full="shots/03-menu.jpg"
+          data-title="Everything on one card"
+          data-cap="Tourney, Solo, Multi, Practice, Stats and Credits — pointed at with the controller, no wrist menus."
+          aria-label="View: Everything on one card">
+          <img src="shots/03-menu-thumb.jpg" alt="The main menu card floating in the court, with Tourney, Solo, Multi and Practice buttons" width="880" height="495" loading="lazy" decoding="async">
+        </button>
+        <figcaption class="shot__cap"><b>Everything on one card</b> Tourney, Solo, Multi, Practice, Stats and Credits — pointed at with the controller, no wrist menus.</figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <button class="shot__btn" type="button"
+          data-full="shots/04-bracket.jpg"
+          data-title="Eight slots, one of them yours"
+          data-cap="Single elimination. You are always top left, and the other seven are drawn fresh every tournament."
+          aria-label="View: Eight slots, one of them yours">
+          <img src="shots/04-bracket-thumb.jpg" alt="The tournament bracket screen showing eight names in a single-elimination ladder" width="880" height="495" loading="lazy" decoding="async">
+        </button>
+        <figcaption class="shot__cap"><b>Eight slots, one of them yours</b> Single elimination. You are always top left, and the other seven are drawn fresh every tournament.</figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <button class="shot__btn" type="button"
+          data-full="shots/05-multiplayer.jpg"
+          data-title="Host, quick match, or go find one"
+          data-cap="The little green bead lights up when there is an open court out there to join."
+          aria-label="View: Host, quick match, or go find one">
+          <img src="shots/05-multiplayer-thumb.jpg" alt="The multiplayer menu page with Host, Quick Match and Find buttons" width="880" height="495" loading="lazy" decoding="async">
+        </button>
+        <figcaption class="shot__cap"><b>Host, quick match, or go find one</b> The little green bead lights up when there is an open court out there to join.</figcaption>
+      </figure>
+
+      <figure class="shot reveal">
+        <button class="shot__btn" type="button"
+          data-full="shots/06-rounds.jpg"
+          data-title="Five if you are busy, fifteen if you are serious"
+          data-cap="Solo games run to 5, 10 or 15 points. Online is always the full 15-point game."
+          aria-label="View: Five if you are busy, fifteen if you are serious">
+          <img src="shots/06-rounds-thumb.jpg" alt="The rounds menu page offering games to 5, 10 or 15 points" width="880" height="495" loading="lazy" decoding="async">
+        </button>
+        <figcaption class="shot__cap"><b>Five if you are busy, fifteen if you are serious</b> Solo games run to 5, 10 or 15 points. Online is always the full 15-point game.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<hr class="courtline">
+
+<!-- ─────────────────────────── 04 · TRAILER ─────────────────────────── -->
+<section class="section" id="trailer">
+  <div class="wrap">
+    <p class="kicker reveal">04 — Trailer</p>
+    <h2 class="big reveal">Ninety seconds on court.</h2>
+
+    <div class="trailer reveal" id="trailerBox" data-video="t8ZrFR9D0LQ">
+      <button class="trailer__poster" type="button" aria-label="Play the WALLBANGERS trailer on YouTube">
+        <img src="shots/02-court.jpg" alt="" width="1760" height="990" loading="lazy" decoding="async">
+        <span class="trailer__play">
+          <span class="trailer__disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+          <span class="trailer__label">Play trailer</span>
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<hr class="courtline">
+
+<!-- ─────────────────────────── 05 · K.E.V.I.N. ─────────────────────────── -->
+<section class="section section--alt" id="bots">
+  <div class="wrap">
+    <p class="kicker reveal">05 — Your opponent</p>
+    <h2 class="big reveal">Meet <em>K.E.V.I.N.</em></h2>
+
+    <div class="kev">
+      <figure class="reveal">
+        <img src="shots/kevin.jpg" alt="K.E.V.I.N., a floating egg-shaped robot with glowing cyan eyes and hover rings, standing on the court" width="1280" height="720" loading="lazy" decoding="async">
+        <figcaption>actual gameplay — he is already judging your form</figcaption>
+      </figure>
+
+      <div class="reveal">
+        <span class="pips" aria-hidden="true">
+          <i class="b live"></i><i class="b"></i><i class="r"></i><i class="b"></i><i class="r"></i>
+        </span>
+        <p class="lead">
+          A floating, hover-ring robot with a racket arm, a chest full of score
+          pips, and opinions about your technique. <b style="color:var(--ink)">He learns.</b>
+          K.E.V.I.N. logs where you return serve and where you miss, and the
+          spot he keeps beating you to is not a coincidence. Take a game off him
+          and he detonates into a very satisfying pile of physics debris — then
+          reassembles, ready to go again.
+        </p>
+      </div>
+    </div>
+
+    <div class="tiers">
+      <div class="tier tier--noob reveal">
+        <p class="tier__lvl">Noob</p>
+        <q class="tier__q">Nice shot! You&rsquo;re good!</q>
+        <p>Feeds you returnable balls, telegraphs his serve by looking where it
+          is going, and genuinely roots for you.</p>
+      </div>
+      <div class="tier tier--rookie reveal">
+        <p class="tier__lvl">Rookie</p>
+        <q class="tier__q">Point me. Gotcha.</q>
+        <p>Plays it straight. Wins some, loses some, and mutters
+          <i>&ldquo;Belgium!&rdquo;</i> when you take one off him.</p>
+      </div>
+      <div class="tier tier--pro reveal">
+        <p class="tier__lvl">Pro</p>
+        <q class="tier__q">Pathetic. Is that all?</q>
+        <p>Hunts your weak side, gives away nothing, and calls the best winner
+          you have hit all night &ldquo;predictable.&rdquo;</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="courtline">
+
+<!-- ─────────────────────────── 06 · THE BRACKET ─────────────────────────── -->
+<section class="section">
+  <div class="wrap">
+    <p class="kicker reveal">06 — Tournament mode</p>
+    <h2 class="big reveal">Seven robots.<br>One bracket. <em>Zero mercy.</em></h2>
+    <p class="lead lead--wide reveal">
+      Eight slots, single elimination, and you are always in the top left. The
+      ladder tightens as you climb — Noob in the quarters, Rookie in the semis,
+      Pro in the final. The seeding is a fresh coin flip every run, but the
+      robots are not: each one keeps the same eyes, the same voice and the same
+      infuriating habits every time you meet them.
+    </p>
+
+    <div class="roster">
+      <article class="bot reveal" style="--bc:#2f6dff">
+        <span class="bot__eyes" aria-hidden="true"><i></i><i></i></span>
+        <h3 class="bot__name">K.E.V.I.N.</h3>
+        <p class="bot__role">The Original</p>
+        <p class="bot__d">The baseline unit. Balanced, patient, and quietly logging every weakness you show him. He has been ready since boot.</p>
+        <p class="bot__q">&ldquo;Beep. That means point.&rdquo;</p>
+      </article>
+
+      <article class="bot reveal" style="--bc:#ff7a2b">
+        <span class="bot__eyes" aria-hidden="true"><i></i><i></i></span>
+        <h3 class="bot__name">R.O.Y.</h3>
+        <p class="bot__role">The Hothead</p>
+        <p class="bot__d">Maximum speed, maximum topspin, maximum mistakes. Every shot is a kill shot. Every loss is the racket&rsquo;s fault.</p>
+        <p class="bot__q">&ldquo;I&rsquo;M MAXIMUM OVERDRIVE!&rdquo;</p>
+      </article>
+
+      <article class="bot reveal" style="--bc:#ffd23f">
+        <span class="bot__eyes" aria-hidden="true"><i></i><i></i></span>
+        <h3 class="bot__name">P.A.M.</h3>
+        <p class="bot__role">The Wildcard</p>
+        <p class="bot__d">Heavy spin on a random axis, every single time. Nobody knows where the ball is going. Including P.A.M.</p>
+        <p class="bot__q">&ldquo;The ball tells me its secrets.&rdquo;</p>
+      </article>
+
+      <article class="bot reveal" style="--bc:#3ddc84">
+        <span class="bot__eyes" aria-hidden="true"><i></i><i></i></span>
+        <h3 class="bot__name">G.A.R.Y.</h3>
+        <p class="bot__role">The Wall</p>
+        <p class="bot__d">Everything comes back. Soft, patient, eternal. He is not beating you — he is waiting for you to beat yourself.</p>
+        <p class="bot__q">&ldquo;Walls do not lose.&rdquo;</p>
+      </article>
+
+      <article class="bot reveal" style="--bc:#6a5cff">
+        <span class="bot__eyes" aria-hidden="true"><i></i><i></i></span>
+        <h3 class="bot__name">D.O.U.G.</h3>
+        <p class="bot__role">The Cannon</p>
+        <p class="bot__d">Slow legs, freight-train forehand. Make him move and he crumbles. Let him plant his feet and start praying.</p>
+        <p class="bot__q">&ldquo;My legs are decorative.&rdquo;</p>
+      </article>
+
+      <article class="bot reveal" style="--bc:#d05cff">
+        <span class="bot__eyes" aria-hidden="true"><i></i><i></i></span>
+        <h3 class="bot__name">B.R.E.N.D.A.</h3>
+        <p class="bot__role">The Surgeon</p>
+        <p class="bot__d">Backspin slices that die on the bounce, placed to the millimetre. She is not playing racquetball. She is operating.</p>
+        <p class="bot__q">&ldquo;I wrote the textbook.&rdquo;</p>
+      </article>
+
+      <article class="bot reveal" style="--bc:#38e3f0">
+        <span class="bot__eyes" aria-hidden="true"><i></i><i></i></span>
+        <h3 class="bot__name">C.H.U.C.K.</h3>
+        <p class="bot__role">The Opportunist</p>
+        <p class="bot__d">Five-bounce serve rituals, shameless cheese, and formal protests when he loses. The serve IS the game, baby.</p>
+        <p class="bot__q">&ldquo;Belgium! DOUBLE Belgium!&rdquo;</p>
+      </article>
+    </div>
+
+    <p class="ladder reveal">
+      <b>Noob</b> quarters <span>&rarr;</span> <b>Rookie</b> semis <span>&rarr;</span> <b>Pro</b> final
+      <span>·</span> Can you beat all seven?
+    </p>
+  </div>
+</section>
+
+<hr class="courtline">
+
+<!-- ─────────────────────────── 07 · ONLINE ─────────────────────────── -->
+<section class="section beta" id="online">
+  <div class="wrap">
+    <p class="beta__badge">Online 1v1 — Beta</p>
+    <p>
+      Quick-match into an open court or host one for a friend, with voice chat
+      on the court with you. It is marked beta because that is exactly what it
+      is — <b>this release is the large-scale test.</b> If a match will not
+      connect, hit the in-game bug report and tell us what you saw. You are the
+      stress test. Thank you for your service.
+    </p>
+  </div>
+</section>
+
+<hr class="courtline">
+
+<!-- ─────────────────────────── 08 · COMFORT ─────────────────────────── -->
+<section class="section">
+  <div class="wrap">
+    <p class="kicker reveal">08 — Built for VR</p>
+    <h2 class="big reveal">Comfort is a feature.</h2>
+
+    <div class="bento">
+      <article class="cell cell--wide reveal">
+        <h3>Locked at 90 Hz</h3>
+        <p>
+          The whole court is baked — static lighting, no runtime post — because
+          a racquetball rally is the wrong place to drop frames. Quest 3 and
+          Quest 3S hold <b>90 Hz</b> in normal play, and the ball is simulated on
+          the physics tick rather than the render one.
+        </p>
+      </article>
+
+      <article class="cell reveal">
+        <h3>Turn your way</h3>
+        <p>Snap turning at <b>30°</b>, <b>45°</b> or <b>60°</b>, or smooth if
+          that is your thing. Your call, saved between sessions.</p>
+      </article>
+
+      <article class="cell cell--accent reveal">
+        <h3>Sprint without the queasiness</h3>
+        <p>Click the left stick for a short burst of speed. A comfort vignette
+          closes in on your peripheral vision while you move and opens back up
+          the moment you stop.</p>
+      </article>
+
+      <article class="cell reveal">
+        <h3>Either hand, mid-match</h3>
+        <p>Fully left- or right-handed. Click the right stick and the racket
+          jumps hands between rallies — no menu, no restart.</p>
+      </article>
+
+      <article class="cell reveal">
+        <h3>Dial in the picture</h3>
+        <p>Quality preset and render scale are both in the options, alongside
+          separate master, effects and music levels.</p>
+      </article>
+
+      <article class="cell cell--wide reveal">
+        <h3>Walked in, then left alone</h3>
+        <p>
+          A first-boot tutorial puts a racket in your hand and a ball on your
+          strings in about a minute, and it is replayable from the options
+          whenever you want it. There is an in-game bug reporter too — it goes
+          straight to our inbox, and it is the fastest way to get something fixed.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── PA CALL ─────────────────────────── -->
+<div class="pa">
+  <p class="pa__call">&ldquo;Match point. Don&rsquo;t choke.&rdquo;</p>
+  <p class="pa__who">the announcer, believing in you</p>
+</div>
+
+<hr class="courtline">
+
+<!-- ─────────────────────────── 09 · SPECS + GET ─────────────────────────── -->
+<section class="section section--grad" id="specs">
+  <div class="wrap">
+    <div class="specs">
+      <div>
+        <p class="kicker reveal">09 — Specs</p>
+        <h2 class="big big--sm reveal">The details.</h2>
+        <dl class="spec reveal">
+          <div><dt>Platform</dt><dd>Meta Quest 3 &amp; Quest 3S</dd></div>
+          <div><dt>Mode</dt><dd>Room-scale VR, standalone</dd></div>
+          <div><dt>Modes</dt><dd>Solo · Tournament · Practice · Online 1v1 (beta)</dd></div>
+          <div><dt>Game length</dt><dd>5, 10 or 15 points</dd></div>
+          <div><dt>Refresh</dt><dd>90 Hz</dd></div>
+          <div><dt>Input</dt><dd>Touch controllers</dd></div>
+          <div><dt>Players</dt><dd>1 offline · 2 online</dd></div>
+          <div><dt>Studio</dt><dd>Baglunch Games</dd></div>
+        </dl>
+      </div>
+
+      <aside class="get reveal">
+        <span class="get__glow" aria-hidden="true"></span>
+        <h3>Seven robots are waiting.</h3>
+        <p>
+          Pick a length, pick a skill, and serve. Ten seconds after the headset
+          goes on you are in a rally — and about ninety seconds after that
+          you will be arguing with a robot.
+        </p>
+        <a class="btn btn--primary btn--lg" data-store-link
+           data-pending="Coming to Quest" data-pending-note="Meta Horizon Store"
+           href="#" target="_blank" rel="noopener noreferrer">Get it on Quest<small>Meta Horizon Store</small></a>
+        <p class="get__note">Meta Horizon Store · Baglunch Games</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <p class="foot__brand">Baglunch Games</p>
+    <p class="foot__links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="mailto:baglunchgames@gmail.com">Contact</a>
+    </p>
+    <p class="foot__copy">
+      © <span id="year">2026</span> Baglunch Games. Built in Unity, made for Meta Quest.
+      Meta Quest is a trademark of Meta Platforms, Inc.
+    </p>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-labelledby="lbCap" hidden>
+  <div class="lb__card">
+    <button class="lb__close" id="lbClose" type="button" aria-label="Close">&times;</button>
+    <img class="lb__img" id="lbImg" src="" alt="">
+    <p class="lb__cap" id="lbCap"></p>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
