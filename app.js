@@ -11,7 +11,10 @@
      Left empty, those buttons render as a non-clickable
      "Coming to the Quest Store" state instead of a dead link.
      ─────────────────────────────────────────────────────────── */
-  var STORE_URL = '';
+  /* Locale-neutral on purpose: Meta redirects to the visitor's own locale.
+     Do not paste the /en-gb/ (or any other localised) form here, or every
+     visitor gets served that region's page. */
+  var STORE_URL = 'https://www.meta.com/experiences/wallbangers-racquetball-vr/1339635869228829/';
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

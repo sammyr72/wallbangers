@@ -16,18 +16,22 @@ og.jpg          social share card
 Total ~1.5 MB. Open `index.html` directly in a browser to preview — everything
 is relative, nothing needs a server.
 
-## The one thing to edit
+## The store link
 
-`app.js`, line ~14:
+The listing is live and wired up. All three "Get it on Quest" buttons take
+their href from a single constant in `app.js`:
 
 ```js
-var STORE_URL = '';
+var STORE_URL = 'https://www.meta.com/experiences/wallbangers-racquetball-vr/1339635869228829/';
 ```
 
-Paste the Meta Horizon Store listing URL between the quotes and all three
-"Get it on Quest" buttons wire themselves up. While it's empty they render as
-a non-clickable **"Coming to Quest"** state instead of a dead link — safe to
-ship as-is before the listing goes live.
+Keep it **locale-neutral** — Meta redirects to the visitor's own region. Pasting
+the `/en-gb/` form (or any other localised variant) serves that region's page
+to everyone.
+
+Setting it back to `''` returns every button to a non-clickable
+**"Coming to Quest"** state rather than a dead link, which is worth knowing if
+the listing ever comes down.
 
 ## Hosting — GitHub Pages
 
